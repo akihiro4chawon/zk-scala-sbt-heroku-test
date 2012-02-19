@@ -1,0 +1,34 @@
+<window title="Ｓｃｈｅｄｕｌｅｄ Ｔｗｅｅｔｓ" border="normal"
+	apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.github.akihiro4chawon.zktweetbot.tweet.TweetViewModel')"
+	validationMessages="@id('vmsgs')">
+	<listbox id="box" multiple="true" rows="5" model="@bind(vm.tweets)" selectedItem="@bind(vm.selectedTweet)">
+		<listhead>
+			<listheader label="Date" sort="auto(date)"/>
+			<listheader label="Status" sort="auto(status)"/>
+		</listhead>
+		<template name="model" var="tweet">
+			<listitem value="@load(tweet)">
+				<listcell label="@load(tweet.date)" />
+				<listcell label="@load(tweet.status)" />
+			</listitem>
+		</template>		
+	</listbox>
+	<groupbox id="mygrp"
+		form="@id('tweet') @load(vm.selectedTweet) @save(vm.selectedTweet, before='update') @save(vm.newTweet, before='add') @validator('com.github.akihiro4chawon.zktweetbot.tweet.TweetValidator')">
+		Date:
+		<datebox id="date" cols="18" format="yyyy/M/d hh:mm:ss" timeZone="GMT+9" value="@bind(tweet.date)" constraint="no past, no empty"/>
+		<caption label="Status" />
+		Status: 
+		<textbox id="txtStatus" cols="25" value="@bind(tweet.status)" />
+		<button id="add" label="Add" onClick="@command('add')" />
+		<button id="update" label="Update" onClick="@command('update')"
+			disabled="@load(empty vm.selectedTweet)" />
+		<button id="delete" label="Delete" onClick="@command('delete')"
+			disabled="@load(empty vm.selectedTweet)" />
+		<hlayout>
+			<label style="color:red" value="@load(vmsgs['date'])" />
+			<label style="color:red" value="@load(vmsgs['status'])" />
+		</hlayout>
+	</groupbox>
+</window>
